@@ -1,70 +1,57 @@
 package org.example;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Hero extends JPanel {
+public class Hero {
     private BufferedImage spriteSheet;
-    private BufferedImage currentFrame;
-    int x = 7;
-    int y = 7;
-    int stepx = 74;
-    int stepy = 80;
-    int frameWidth = 60;
-    int frameHeight = 75;
+    private int frameX = 7;
+    private int frameY = 7;
+    private final int frameWidth = 60;
+    private final int frameHeight = 75;
+    private int stepX = 74;
+
+    public int posX = 100;
+    public int posY = 100;
+
     public Hero() {
         try {
             spriteSheet = ImageIO.read(getClass().getResource("/2d.png"));
-            currentFrame = spriteSheet.getSubimage(x, y, frameWidth, frameHeight);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void moveRight() {
-        y = 562;
-        int maxX = spriteSheet.getWidth() - frameWidth;
-        x = (x + stepx > maxX) ? 7 : x + stepx;
-        repaint();
-        System.out.println("RIGHT: " + x + " " + y);
+    public void moveUp() {
+        frameY = 482;
+        posY -= 10;
+        frameX = (frameX - stepX < 0) ? spriteSheet.getWidth() - frameWidth : frameX - stepX;
     }
 
     public void moveDown() {
-        y = 322;
-        int maxX = spriteSheet.getWidth() - frameHeight;
-        x = (x + stepx > maxX) ? 7 : x + stepx;
-        repaint();
-        System.out.println("DOWN: " + x + " " + y);
-    }
-
-    public void moveUp() {
-        y = 482;
-        x = (x - stepx < 0) ? spriteSheet.getWidth() - frameWidth : x - stepx;
-        repaint();
-        System.out.println("UP: " + x + " " + y);
+        frameY = 322;
+        posY += 10;
+        frameX = (frameX + stepX > spriteSheet.getWidth() - frameWidth) ? 7 : frameX + stepX;
     }
 
     public void moveLeft() {
-        y = 402;
-        x = (x - stepx < 0) ? spriteSheet.getWidth() - frameWidth : x - stepx;
-        repaint();
-        System.out.println("LEFT: " + x + " " + y);
+        frameY = 402;
+        posX -= 10;
+        frameX = (frameX - stepX < 0) ? spriteSheet.getWidth() - frameWidth : frameX - stepX;
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void moveRight() {
+        frameY = 562;
+        posX += 10;
+        frameX = (frameX + stepX > spriteSheet.getWidth() - frameWidth) ? 7 : frameX + stepX;
+    }
+
+    public void draw(Graphics g) {
         if (spriteSheet != null) {
-            currentFrame = spriteSheet.getSubimage(x, y, frameWidth, frameHeight);
-
-            // Центрирование по окну
-            int centerX = (getWidth() - frameWidth) / 2;
-            int centerY = (getHeight() - frameHeight) / 2;
-
-            g.drawImage(currentFrame, centerX, centerY, frameWidth, frameHeight, null);
+            BufferedImage frame = spriteSheet.getSubimage(frameX, frameY, frameWidth, frameHeight);
+            g.drawImage(frame, posX, posY, null);
         }
     }
 }

@@ -30,7 +30,6 @@ public class AudioPlayer {
     public void stop() {
         if (clip != null) {
             clip.stop();
-            clip.close();
         }
     }
 }
